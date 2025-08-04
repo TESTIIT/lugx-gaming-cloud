@@ -14,3 +14,4 @@ if ($response.StatusCode -ne 200) { exit 1 }
 
 Write-Host ">>> All Integration Tests Passed!"
 exit 0
+

@@ -16,8 +16,8 @@ spec:
         - name: clickhouse
           image: yandex/clickhouse-server:latest
           ports:
-            - containerPort: 8123  # HTTP
-            - containerPort: 9000  # Native TCP
+            - containerPort: 8123  
+            - containerPort: 9000  
           volumeMounts:
             - name: clickhouse-storage
               mountPath: /var/lib/clickhouse
