@@ -26,7 +26,6 @@ jobs:
     - name: Build Docker Images
       run: |
         eval $(minikube docker-env)
-        docker build -t lugx-frontend:latest ./lugx_gaming_frontend
         docker build -t game-service:latest ./game-service
         docker build -t order-service:latest ./order-service
         docker build -t analytics-service:latest ./analytics-service
@@ -34,7 +33,6 @@ jobs:
     # Step 4: Apply Kubernetes Manifests with correct paths
     - name: Apply Kubernetes Deployments
       run: |
-        kubectl apply -f ./lugx_gaming_frontend/frontend-deployment.yaml
         kubectl apply -f ./k8s-configs/game-service.yaml
         kubectl apply -f ./k8s-configs/order-service.yaml
         kubectl apply -f ./k8s-configs/analytics-service.yaml
@@ -42,7 +40,6 @@ jobs:
     # Step 5: Wait for Pods to be Ready
     - name: Wait for Pods
       run: |
-        kubectl rollout status deployment/lugx-frontend --timeout=180s
         kubectl rollout status deployment/game-service --timeout=180s
         kubectl rollout status deployment/order-service --timeout=180s
         kubectl rollout status deployment/analytics-service --timeout=180s
