@@ -1,0 +1,40 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: lugx-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: lugx.local
+    http:
+      paths:
+      - path: /()(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: lugx-frontend-service
+            port:
+              number: 80
+      - path: /game(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: game-service
+            port:
+              number: 3000
+      - path: /order(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: order-service
+            port:
+              number: 3001
+      - path: /analytics(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: analytics-service
+            port:
+              number: 3002

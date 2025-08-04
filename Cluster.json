@@ -1,0 +1,115 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "panels": [
+    {
+      "type": "timeseries",
+      "title": "Cluster CPU Usage (Avg %)",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "targets": [
+        {
+          "expr": "(1 - avg(rate(node_cpu_seconds_total{mode=\"idle\"}[2m]))) * 100",
+          "legendFormat": "Cluster CPU %"
+        }
+      ],
+      "id": 1
+    },
+    {
+      "type": "timeseries",
+      "title": "Cluster Memory Usage",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "targets": [
+        {
+          "expr": "(1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100",
+          "legendFormat": "Cluster Memory %"
+        }
+      ],
+      "id": 2
+    },
+    {
+      "type": "timeseries",
+      "title": "Cluster Filesystem Usage",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+      "targets": [
+        {
+          "expr": "(1 - (node_filesystem_avail_bytes{mountpoint=\"/\"} / node_filesystem_size_bytes{mountpoint=\"/\"})) * 100",
+          "legendFormat": "Disk Usage %"
+        }
+      ],
+      "id": 3
+    },
+    {
+      "type": "timeseries",
+      "title": "Cluster Network I/O Pressure",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
+      "targets": [
+        {
+          "expr": "rate(node_network_receive_bytes_total[2m])",
+          "legendFormat": "Network Rx"
+        },
+        {
+          "expr": "rate(node_network_transmit_bytes_total[2m])",
+          "legendFormat": "Network Tx"
+        }
+      ],
+      "id": 4
+    },
+    {
+      "type": "timeseries",
+      "title": "Pod CPU Usage (Lugx Pods)",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 16 },
+      "targets": [
+        {
+          "expr": "rate(container_cpu_usage_seconds_total{namespace=\"default\",pod=~\"(lugx-frontend|game-service|order-service|analytics-service).*\"}[2m])",
+          "legendFormat": "{{pod}}"
+        }
+      ],
+      "id": 5
+    },
+    {
+      "type": "timeseries",
+      "title": "Pod Memory Usage (Lugx Pods)",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 16 },
+      "targets": [
+        {
+          "expr": "container_memory_usage_bytes{namespace=\"default\",pod=~\"(lugx-frontend|game-service|order-service|analytics-service).*\"}",
+          "legendFormat": "{{pod}}"
+        }
+      ],
+      "id": 6
+    },
+    {
+      "type": "timeseries",
+      "title": "Pod Restarts (Lugx Pods)",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 24 },
+      "targets": [
+        {
+          "expr": "kube_pod_container_status_restarts_total{namespace=\"default\",pod=~\"(lugx-frontend|game-service|order-service|analytics-service).*\"}",
+          "legendFormat": "{{pod}}"
+        }
+      ],
+      "id": 7
+    },
+    {
+      "type": "timeseries",
+      "title": "Pod Network Usage (Rx/Tx Bytes)",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 24 },
+      "targets": [
+        {
+          "expr": "rate(container_network_receive_bytes_total{namespace=\"default\",pod=~\"(lugx-frontend|game-service|order-service|analytics-service).*\"}[2m])",
+          "legendFormat": "{{pod}} - Rx"
+        },
+        {
+          "expr": "rate(container_network_transmit_bytes_total{namespace=\"default\",pod=~\"(lugx-frontend|game-service|order-service|analytics-service).*\"}[2m])",
+          "legendFormat": "{{pod}} - Tx"
+        }
+      ],
+      "id": 8
+    }
+  ],
+  "schemaVersion": 27,
+  "title": "Lugx Gaming + Cluster Observability Dashboard",
+  "version": 1
+}

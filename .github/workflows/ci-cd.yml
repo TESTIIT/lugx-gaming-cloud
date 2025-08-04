@@ -1,0 +1,53 @@
+name: Lugx Gaming CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  schedule:
+    - cron: "0 */6 * * *"   # Run every 6 hours for reliability
+
+jobs:
+  build-deploy-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Step 1: Checkout Repository
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    # Step 2: Set up Minikube (for local dev) or connect to AWS EKS
+    - name: Set up Minikube
+      uses: medyagh/setup-minikube@latest
+      with:
+        driver: docker
+        kubernetes-version: v1.27.3
+
+    # Step 3: Build Docker Images for services
+    - name: Build Docker Images
+      run: |
+        eval $(minikube docker-env)
+        docker build -t lugx-frontend:latest ./lugx_gaming_frontend
+        docker build -t game-service:latest ./game-service
+        docker build -t order-service:latest ./order-service
+        docker build -t analytics-service:latest ./analytics-service
+
+    # Step 4: Apply Kubernetes Manifests with rolling update strategy
+    - name: Apply Kubernetes Deployments
+      run: |
+        kubectl apply -f ./k8s-configs/frontend-deployment.yaml
+        kubectl apply -f ./k8s-configs/game-service.yaml
+        kubectl apply -f ./k8s-configs/order-service.yaml
+        kubectl apply -f ./k8s-configs/analytics-service.yaml
+
+    # Step 5: Wait for Pods to be Ready
+    - name: Wait for Pods
+      run: |
+        kubectl rollout status deployment/lugx-frontend --timeout=180s
+        kubectl rollout status deployment/game-service --timeout=180s
+        kubectl rollout status deployment/order-service --timeout=180s
+        kubectl rollout status deployment/analytics-service --timeout=180s
+
+    # Step 6: Run Integration Tests
+    - name: Run Integration Tests
+      shell: pwsh
+      run: ./tests/run-tests.ps1
