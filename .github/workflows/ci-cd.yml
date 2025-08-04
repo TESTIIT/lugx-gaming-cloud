@@ -15,7 +15,7 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v3
 
-    # Step 2: Set up Minikube (for local dev) or connect to AWS EKS
+    # Step 2: Set up Minikube
     - name: Set up Minikube
       uses: medyagh/setup-minikube@latest
       with:
@@ -31,10 +31,10 @@ jobs:
         docker build -t order-service:latest ./order-service
         docker build -t analytics-service:latest ./analytics-service
 
-    # Step 4: Apply Kubernetes Manifests with rolling update strategy
+    # Step 4: Apply Kubernetes Manifests with correct paths
     - name: Apply Kubernetes Deployments
       run: |
-        kubectl apply -f ./k8s-configs/frontend-deployment.yaml
+        kubectl apply -f ./lugx_gaming_frontend/frontend-deployment.yaml
         kubectl apply -f ./k8s-configs/game-service.yaml
         kubectl apply -f ./k8s-configs/order-service.yaml
         kubectl apply -f ./k8s-configs/analytics-service.yaml
