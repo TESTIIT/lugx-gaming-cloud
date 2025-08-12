@@ -3,8 +3,7 @@ name: Lugx Gaming CI/CD Pipeline
 on:
   push:
     branches: [ "main" ]
-  schedule:
-    - cron: "0 */6 * * *"   # Run every 6 hours for reliability
+ 
 
 jobs:
   build-deploy-test:
